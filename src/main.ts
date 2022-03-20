@@ -1,7 +1,27 @@
 import fs from 'fs'
 import {COVERITY_PASSWORD, COVERITY_PROJECT_NAME, COVERITY_URL, COVERITY_USERNAME, DEBUG_MODE, GITHUB_TOKEN, JSON_FILE_PATH} from './inputs'
 import {info, setFailed, warning} from '@actions/core'
-import {COMMENT_PREFACE, coverityCreateIssueCommentMessage, coverityCreateNoLongerPresentMessage, coverityCreateReviewCommentMessage, coverityIsPresent, CoverityIssueOccurrence, CoverityProjectIssue, DiffMap, githubCreateIssueComment, githubCreateReview, githubGetDiffMap, githubGetExistingIssueComments, githubGetExistingReviewComments, githubGetPullRequestDiff, githubIsPullRequest, githubUpdateExistingIssueComment, githubUpdateExistingReviewComment, logger} from '@jcroall/synopsys-sig-node/lib'
+import {
+  COMMENT_PREFACE,
+  coverityCreateIssueCommentMessage,
+  coverityCreateNoLongerPresentMessage,
+  coverityCreateReviewCommentMessage,
+  coverityIsPresent,
+  CoverityIssueOccurrence,
+  CoverityProjectIssue,
+  DiffMap,
+  githubCreateIssueComment,
+  githubCreateReview,
+  githubGetDiffMap,
+  githubGetExistingIssueComments,
+  githubGetExistingReviewComments,
+  githubGetPullRequestDiff,
+  githubIsPullRequest,
+  githubRelativizePath,
+  githubUpdateExistingIssueComment,
+  githubUpdateExistingReviewComment,
+  logger
+} from '@jcroall/synopsys-sig-node/lib'
 import {coverityMapMatchingMergeKeys} from '@jcroall/synopsys-sig-node/lib/utils/coverity-issue-mapper'
 import {CoverityIssuesView} from '@jcroall/synopsys-sig-node/lib/models/coverity-json-v7-schema'
 import {NewReviewComment} from '@jcroall/synopsys-sig-node/lib/_namespaces/github'
@@ -133,7 +153,7 @@ function isInDiff(issue: CoverityIssueOccurrence, diffMap: DiffMap): boolean {
 
 function createReviewComment(issue: CoverityIssueOccurrence, commentBody: string): NewReviewComment {
   return {
-    path: /* TODO: Don't need relatavize? */ /* relativizePath(issue.mainEventFilePathname), */ issue.mainEventFilePathname,
+    path: githubRelativizePath(issue.mainEventFilePathname),
     body: commentBody,
     line: issue.mainEventLineNumber,
     side: 'RIGHT'
