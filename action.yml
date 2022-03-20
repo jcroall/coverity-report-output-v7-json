@@ -20,6 +20,10 @@ inputs:
   coverity-password:
     description: 'The password associated with the Coverity username'
     required: false
+  debug:
+    description: 'Enable verbose debugging messages'
+    required: false
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
